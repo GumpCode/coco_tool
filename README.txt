@@ -7,9 +7,7 @@ In addition to this API, please download both the COCO images and annotations in
 -Please download and place the annotations in: coco/annotations/
 For substantially more details on the API please see http://mscoco.org/dataset/#download.
 
-After downloading the images and annotations, run the Matlab, Python, or Lua demos for example usage.
+modified from https://github.com/weiliu89/coco and https://github.com/tzutalin/labelImg
 
-To install:
--For Matlab, add coco/MatlabApi to the Matlab path (OSX/Linux binaries provided)
--For Python, run "make" under coco/PythonAPI
--For Lua, run “luarocks make LuaAPI/rocks/coco-scm-1.rockspec” under coco/
+function is added:
+(1) change json to xml format
