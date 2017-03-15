@@ -16,6 +16,7 @@ from collections import OrderedDict
 import json
 import os
 import sys
+import shutil
 sys.path.append(os.path.dirname(sys.path[0]))
 
 from pycocotools.coco import COCO
@@ -29,19 +30,28 @@ if __name__ == "__main__":
             help = "A file which contains the image set information.")
     #parser.add_argument("namesizefile", default = "",
     #        help = "A file which stores the name size information.")
-    parser.add_argument("out_dir", default = "",
+    parser.add_argument("data_type", default = "",
+            help = "Specify the output datatpy, eg:val/train.")
+    parser.add_argument("anno_out_dir", default = "",
             help = "A dir which stores the new xml file.")
+    parser.add_argument("img_out_dir", default = "",
+            help = "A dir which stores the new img file.")
 
     args = parser.parse_args()
     annofile = args.annofile
     imgsetfile = args.imgsetfile
     #namesizefile = args.namesizefile
-    out_dir = args.out_dir
+    data_type = args.data_type
+    anno_out_dir = args.anno_out_dir
+    img_out_dir = args.img_out_dir
 
-    seleted_map = {'5':'1', '2':'2', '15':'3', '9':'4', '40':'5', '6':'6', '3':'7', '16':'8',
-            '57':'9', '20':'10', '61':'11', '17':'12', '18':'13', '4':'14', '1':'15', '59':'16',
-            '19':'17', '58':'18', '7':'19', '63':'20'}
+    seleted_map = {5:1, 2:2, 15:3, 9:4, 40:5, 6:6, 3:7, 16:8,
+            57:9, 20:10, 61:11, 17:12, 18:13, 4:14, 1:15, 59:16,
+            19:17, 58:18, 7:19, 63:20}
     depth = 3
+    #data_dir = "/data/coco"
+    #Imageset_dir = "ImageSets"
+    dirname = imgsetfile.split('.')[0]
     # initialize COCO api.
     coco = COCO(annofile)
 
@@ -49,8 +59,8 @@ if __name__ == "__main__":
         print "{} does not exist".format(imgsetfile)
         sys.exit()
 
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if not os.path.exists(anno_out_dir):
+        os.makedirs(anno_out_dir)
     # Read image info.
     imgs = dict()
     img_ids = coco.getImgIds()
@@ -59,17 +69,30 @@ if __name__ == "__main__":
         img = coco.loadImgs(img_id)[0]
         file_name = img["file_name"]
         name = os.path.splitext(file_name)[0]
-        xml_path = "{}/{}.xml".format(out_dir, name)
+        xml_path = "{}/{}.xml".format(anno_out_dir, name)
         imgs[name] = img
-        if out_dir:
+        if anno_out_dir:
             #get annotation info
             anno_ids = coco.getAnnIds(imgIds=img_id, iscrowd=None)
-            anno = coco.loadAnns(anno_ids)
+            anns = coco.loadAnns(anno_ids)
+            result = XmlWriter("coco", name,
+                (int(img["height"]), int(img["width"]), depth))
             for ann in anns:
+                #print ann
                 cat_id = ann['category_id']
+                if cat_id not in seleted_map.keys():
+                    continue
                 bbox = ann['bbox']
+                #print "cat_id is " + str(cat_id)
+                #print seleted_map[cat_id]
                 # Save information to xml
-                result = XmlWriter(xml_path, seleted_map[img["id"]],
-                        (img["height"], img["width"], depth))
-                result.addBndBox(bbox[0], bbox[1], bbox[2], bbox[3], cat_id)
-                result.save()
+                # XmlWriter(id_name, file_name, (height, width, depth))
+                result.addBndBox(bbox[0], bbox[1], bbox[2], bbox[3], seleted_map[cat_id])
+                result.save(xml_path)
+
+            src = "{}/{}".format(dirname, file_name)
+            dst_dir = "{}/{}".format(img_out_dir, data_type)
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            dst_path = "{}/{}".format(dst_dir, file_name)
+            shutil.copy(src, dst_path)
