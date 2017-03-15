@@ -84,11 +84,11 @@ if __name__ == "__main__":
             result = XmlWriter("coco", name,
                 (int(img["height"]), int(img["width"]), depth))
             for ann in anns:
-                #print ann
                 cat_id = ann['category_id']
                 if cat_id not in class_map.keys():
                     continue
                 bbox = ann['bbox']
+                #count the bbox number per class
                 bboxcount_list[catId_map[cat_id] -1] += 1
                 result.addBndBox(bbox[0], bbox[1], bbox[2], bbox[3], class_map[cat_id])
                 result.save(xml_path)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
             dst_path = "{}/{}".format(dst_dir, file_name)
             shutil.copy(src, dst_path)
 
-    with open("bboxcount.txt", "w") as f:
-        output = zip(class_map.items(), bboxcount_list)
-        for i in output:
-            f.write(i + "\n")
+    output_txt = "{}.txt".format(data_type)
+    with open(output_txt, "w") as f:
+        for i in range(len(bboxcount_list)):
+            f.write(str(bboxcount_list[i]) + "\n")

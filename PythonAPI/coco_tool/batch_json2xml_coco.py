@@ -13,8 +13,8 @@ CAFFE_ROOT = "{}/GumpCode/ssd".format(HOMEDIR)
 # The root directory which stores the coco images, annotations, etc.
 coco_data_dir = "/data/coco"
 # The sets that we want to get the size info.
-anno_sets = ["instances_train2014", "instances_val2014"]
-data_types = ["train", "val"]
+anno_sets = ["instances_val2014","instances_train2014"]
+data_types = ["val", "train"]
 #anno_sets = ["image_info_test-dev2015", "instances_val2014", "image_info_test2014",
 #        "image_info_test2015", "instances_train2014"]
 #anno_sets = anno_sets + ["instances_minival2014", "instances_valminusminival2014"]
