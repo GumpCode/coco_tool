@@ -1,6 +1,16 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
-import _init_path
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+# **********************************************************
+# * Author        : Gump from CQU
+# * Email         : gumpglh@qq.com
+# * Create time   : 2017-03-15 18:53
+# * Last modified : 2017-03-15 18:53
+# * Filename      : json2xml.py
+# * Description   :
+# * Copyright © 2016. All rights reserved.
+# **********************************************************
+
 import sys
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement

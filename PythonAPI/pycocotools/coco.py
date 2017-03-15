@@ -416,6 +416,3 @@ class COCO:
                 'category_id': int(data[i, 6]),
                 }]
         return ann
-
-    #to save image to another json, added by gump
-    def savaJson(self,
