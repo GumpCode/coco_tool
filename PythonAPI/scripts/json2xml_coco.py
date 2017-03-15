@@ -45,12 +45,18 @@ if __name__ == "__main__":
     anno_out_dir = args.anno_out_dir
     img_out_dir = args.img_out_dir
 
-    seleted_map = {5:1, 2:2, 15:3, 9:4, 40:5, 6:6, 3:7, 16:8,
+    class_map = {5:"aeroplane", 2:"bicycle", 15:"bird", 9:"boat", 40:"bottle", 6:"bus",
+            3:"car", 16:"cat", 57:"chair", 20:"cow", 61:"diningtable", 17:"dog", 18:"horse",
+            4:"motorbike", 1:"person", 59:"pottedplant", 19:"sheep", 58:"sofa", 7:"train",
+            63:"tvmonitor"}
+    catId_map = {5:1, 2:2, 15:3, 9:4, 40:5, 6:6, 3:7, 16:8,
             57:9, 20:10, 61:11, 17:12, 18:13, 4:14, 1:15, 59:16,
             19:17, 58:18, 7:19, 63:20}
     depth = 3
-    #data_dir = "/data/coco"
-    #Imageset_dir = "ImageSets"
+    bboxcount_list = [0 for i in range(len(class_map.keys()))]
+    imgcount_list = [0 for i in range(len(class_map.keys()))]
+
+
     dirname = imgsetfile.split('.')[0]
     # initialize COCO api.
     coco = COCO(annofile)
@@ -80,14 +86,11 @@ if __name__ == "__main__":
             for ann in anns:
                 #print ann
                 cat_id = ann['category_id']
-                if cat_id not in seleted_map.keys():
+                if cat_id not in class_map.keys():
                     continue
                 bbox = ann['bbox']
-                #print "cat_id is " + str(cat_id)
-                #print seleted_map[cat_id]
-                # Save information to xml
-                # XmlWriter(id_name, file_name, (height, width, depth))
-                result.addBndBox(bbox[0], bbox[1], bbox[2], bbox[3], seleted_map[cat_id])
+                bboxcount_list[catId_map[cat_id] -1] += 1
+                result.addBndBox(bbox[0], bbox[1], bbox[2], bbox[3], class_map[cat_id])
                 result.save(xml_path)
 
             src = "{}/{}".format(dirname, file_name)
@@ -96,3 +99,8 @@ if __name__ == "__main__":
                 os.makedirs(dst_dir)
             dst_path = "{}/{}".format(dst_dir, file_name)
             shutil.copy(src, dst_path)
+
+    with open("bboxcount.txt", "w") as f:
+        output = zip(class_map.items(), bboxcount_list)
+        for i in output:
+            f.write(i + "\n")

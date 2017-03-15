@@ -13,8 +13,8 @@ CAFFE_ROOT = "{}/GumpCode/ssd".format(HOMEDIR)
 # The root directory which stores the coco images, annotations, etc.
 coco_data_dir = "/data/coco"
 # The sets that we want to get the size info.
-anno_sets = ["instances_train2014"]
-#anno_sets = ["instances_val2014"]
+anno_sets = ["instances_train2014", "instances_val2014"]
+data_types = ["train", "val"]
 #anno_sets = ["image_info_test-dev2015", "instances_val2014", "image_info_test2014",
 #        "image_info_test2015", "instances_train2014"]
 #anno_sets = anno_sets + ["instances_minival2014", "instances_valminusminival2014"]
@@ -23,7 +23,6 @@ anno_dir = "{}/annotations".format(coco_data_dir)
 # The directory which stores the imageset information for each set.
 imgset_dir = "{}/ImageSets".format(coco_data_dir)
 # The directory which stores the image id and size info.
-data_type = "train"
 #out_dir = "{}/data/coco".format(CAFFE_ROOT)
 anno_out_dir = "/data/MixedData/Annotations"
 img_out_dir = "/data/MixedData/ImageSets"
@@ -33,6 +32,7 @@ if not os.path.exists(anno_out_dir):
 ### Get image size info ###
 for i in xrange(0, len(anno_sets)):
     anno_set = anno_sets[i]
+    data_type = data_types[i]
     anno_file = "{}/{}.json".format(anno_dir, anno_set)
     if not os.path.exists(anno_file):
         continue
